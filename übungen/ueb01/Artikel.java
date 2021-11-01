@@ -104,7 +104,6 @@ public class Artikel {
         } else {
             System.out.println("Zugangsmenge kann nicht negativ oder 0 sein!");
         }
-
     }
 
     /***
@@ -128,5 +127,4 @@ public class Artikel {
         System.out.println(ausgabe);
         return ausgabe;
     }
-
 }
