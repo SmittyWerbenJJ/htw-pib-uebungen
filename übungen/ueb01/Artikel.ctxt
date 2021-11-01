@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=Artikel
-comment0.text=\r\n\ Beschreiben\ Sie\ hier\ die\ Klasse\ Artikel.\r\n\ \r\n\ @author\ Raphael\ Kimbula\r\n\ @version\ 2021.01.11\r\n
+comment0.text=\r\n\ Klasse\ Artikel\ f\u00FCr\ eine\ einfache\ Bestandsf\u00FChrung\ Objektklasse\ mit\ den\r\n\ Attributen\:\ Artikelnummer,\ Artikelart\ und\ Bestand.\ Kann\ den\ Zu-\ und\ Abgang\r\n\ vom\ Bestand\ buchen.\ Vom\ Objekt\ einzelne\ Attribute\ neu\ setzen.\ Die\ Werte\ der\r\n\ Attribute\ auflisten\ und\ einzeln\ anzeigen.\r\n\ \r\n\ @author\ Raphael\ Kimbula\r\n\ @version\ 2021.01.11\r\n
 comment1.params=
 comment1.target=int\ getArtikelNr()
 comment1.text=\r\n\ Erhalte\ die\ Artikelnummer\r\n\ \r\n\ @return\ die\ ArtikelNummer\r\n
@@ -13,12 +13,12 @@ comment2.text=\r\n\ Erhalte\ die\ ArtikelArt.\r\n\ \r\n\ @return\ die\ ArtikelAr
 comment3.params=
 comment3.target=int\ getBestand()
 comment3.text=\r\n\ Erhalte\ den\ bestand\ des\ Artikels\r\n\ \r\n\ @return\ den\ Bestand\r\n
-comment4.params=neueArtikelNR
-comment4.target=void\ setArtikelNR(int)
-comment4.text=\r\n\ Setze\ die\ ArtikelNummer\r\n\ \r\n\ @param\ neueArtikelNR\ die\ neue\ ArtikelNummer\r\n
+comment4.params=neueArtikelNr
+comment4.target=void\ setArtikelNr(int)
+comment4.text=\r\n\ Setze\ die\ Artikelnummer\r\n\ \r\n\ @param\ neueArtikelNr\ die\ neue\ Artikelnummer\r\n
 comment5.params=neueArt
 comment5.target=void\ setArt(java.lang.String)
-comment5.text=\r\n\ Setze\ die\ ArtikelARt\r\n\ \r\n\ @param\ neueArt\ die\ qNeue\ ArtikelArt\r\n
+comment5.text=\r\n\ Setze\ die\ Artikelart\r\n\ \r\n\ @param\ neueArt\ die\ qNeue\ Artikelart\r\n
 comment6.params=artikelNr\ art\ bestand
 comment6.target=Artikel(int,\ java.lang.String,\ int)
 comment6.text=\r\n\ Erstellung\ eines\ Artikels\r\n\ \r\n\ @param\ artikelNr\ die\ ArtikelNUmmer\r\n\ @param\ art\ \ \ \ \ \ \ die\ ArtikelArt\r\n\ @param\ bestand\ \ \ Bestand\ des\ Artikels\r\n

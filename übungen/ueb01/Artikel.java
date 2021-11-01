@@ -4,7 +4,7 @@
  * vom Bestand buchen. Vom Objekt einzelne Attribute neu setzen. Die Werte der
  * Attribute auflisten und einzeln anzeigen.
  * 
- * @author Raphael Kimbula
+ * @author Raphael Kimbula & Siyamend Bozkurt
  * @version 2021.01.11
  */
 public class Artikel {
@@ -42,18 +42,18 @@ public class Artikel {
     }
 
     /**
-     * Setze die ArtikelNummer
+     * Setze die Artikelnummer
      * 
-     * @param neueArtikelNR die neue ArtikelNummer
+     * @param neueArtikelNr die neue Artikelnummer
      */
-    public void setArtikelNR(int neueArtikelNR) {
-        this.artikelNr = neueArtikelNR;
+    public void setArtikelNr(int neueArtikelNr) {
+        this.artikelNr = neueArtikelNr;
     }
 
     /**
-     * Setze die ArtikelARt
+     * Setze die Artikelart
      * 
-     * @param neueArt die qNeue ArtikelArt
+     * @param neueArt die qNeue Artikelart
      */
     public void setArt(String neueArt) {
         this.art = neueArt;
@@ -113,7 +113,7 @@ public class Artikel {
      * @param menge zu entfernende Menge
      */
     public void bucheAbgang(int menge) {
-        if ((menge >= 0) && (menge <= this.bestand) && (this.bestand > 0)) {
+        if ((menge > 0) && (menge <= this.bestand) && (this.bestand > 0)) {
             this.bestand -= menge;
         } else {
             System.out.println("Kein Bestand oder nicht genügend Artikel zuer entahme verfügbar!");
