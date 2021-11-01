@@ -1,5 +1,8 @@
 /**
- * Beschreiben Sie hier die Klasse Artikel.
+ * Klasse Artikel für eine einfache Bestandsführung Objektklasse mit den
+ * Attributen: Artikelnummer, Artikelart und Bestand. Kann den Zu- und Abgang
+ * vom Bestand buchen. Vom Objekt einzelne Attribute neu setzen. Die Werte der
+ * Attribute auflisten und einzeln anzeigen.
  * 
  * @author Raphael Kimbula
  * @version 2021.01.11
