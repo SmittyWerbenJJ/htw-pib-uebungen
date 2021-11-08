@@ -67,29 +67,31 @@ public class Artikel {
      * würden die methoden toString keine berechnbare Ausgaben, anhand der
      * gepflegten Artikeldaten generieren.
      */
-    /**
-     * Erstellung eines Artikels
-     * 
-     * @param artikelNr die ArtikelNUmmer
-     * @param art       die ArtikelArt
-     * @param bestand   Bestand des Artikels
-     */
-    public Artikel(int artikelNr, String art, int bestand) {
-        this.artikelNr = artikelNr;
-        this.art = art;
-        this.bestand = bestand;
-    }
 
     /**
      * Erstellung eines Artikels
      * 
-     * @param artikelNr die ArtikelNUmmer
+     * @param artikelNr die ArtikelNummer
      * @param art       die ArtikelArt
      */
     public Artikel(int artikelNr, String art) {
         this.artikelNr = artikelNr;
         this.art = art;
-        this.bestand = 0;
+    }
+
+    /**
+     * Erstellung eines Artikels
+     * 
+     * @param artikelNr die ArtikelNummer
+     * @param art       die ArtikelArt
+     * @param bestand   Bestand des Artikels
+     */
+    public Artikel(int artikelNr, String art, int bestand) {
+        this(artikelNr, art);
+        if (bestand < 0) {
+            bestand = 0;
+        }
+        this.bestand = bestand;
     }
 
     // Methoden
@@ -124,7 +126,22 @@ public class Artikel {
      */
     public String toString() {
         String ausgabe = "Artikel: " + this.artikelNr + ", Art: " + this.art + ", Bestand: " + this.bestand;
-        System.out.println(ausgabe);
         return ausgabe;
+    }
+
+    /**
+     * Main Methode. Erstellt ein Objekt und gibt es aus
+     * 
+     * @param args
+     */
+    public static void main(String[] args) {
+        Artikel schuhe = new Artikel(1001, "Schuhe");
+        Artikel reifen = new Artikel(1002, "Reifen", 100);
+        Artikel kabel = new Artikel(1003, "Reifen", -10);
+
+        System.out.println(schuhe);
+        System.out.println(reifen);
+        System.out.println(kabel);
+
     }
 }
