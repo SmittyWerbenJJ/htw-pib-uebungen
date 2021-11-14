@@ -1,14 +1,10 @@
 ------------------------------------------------------------------------
-Dies ist die README-Datei des Projekts. Hier sollten Sie Ihr Projekt
-beschreiben.
-Erzählen Sie dem Leser (jemand, der nichts über dieses Projekt weiss),
-alles, was er/sie wissen muss. Üblicherweise sollte der Kommentar 
-zumindest die folgenden Angaben umfassen:
+Übung 3 Programmieren 1
 ------------------------------------------------------------------------
 
-PROJEKTBEZEICHNUNG:
-PROJEKTZWECK:
-VERSION oder DATUM:
-WIE IST DAS PROJEKT ZU STARTEN:
-AUTOR(EN):
-BENUTZERHINWEISE:
+PROJEKTBEZEICHNUNG: Übung 3 Programmieren 1
+PROJEKTZWECK: Übungen Programmieren 1
+VERSION oder DATUM: v0.3
+WIE IST DAS PROJEKT ZU STARTEN: BlueJ - Dialog
+AUTOR(EN): Raphael Kimbula
+BENUTZERHINWEISE:BlueJ
