@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.target=MathFunctions
+comment0.text=\r\n\ 3.\ Uebung\ Programmierung\ 1\r\n\r\n\ @author\ Raphael\ Kimbula\r\n\ @version\ v0.3\r\n
+comment1.params=zahl
+comment1.target=long\ berechneTeilersumme(long)
+comment2.params=isbn
+comment2.target=java.lang.String\ berechneChecksummeIsbn(long)
+comment3.params=p\ q
+comment3.target=java.lang.String\ berechneNullstellen(double,\ double)
+comment4.params=args
+comment4.target=void\ main(java.lang.String[])
+numComments=5
