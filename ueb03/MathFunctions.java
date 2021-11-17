@@ -1,60 +1,89 @@
 /**
- * 3. Uebung Programmierung 1
+ * Sammlung an Mathe Funktionen zur Berechnung vor Teilersummen, ISBN-Checksummen, Nullstellen
  *
- * @author Raphael Kimbula
- * @version v0.3
+ * @author Raphael Kimbula & Siyamend Bozkurt
+ * @version v1.0
  */
 public class MathFunctions {
 
+  /**
+   * Konstruktor
+   */
+  public MathFunctions() {}
+
+  /**
+   * Berechnung einer Teilersumme
+   * @param zahl die zu berechnende Zahl
+   * @return die TeilerSumme
+   */
   public static long berechneTeilersumme(long zahl) {
+    check(0 < zahl, "zahl muss eine positive ganze Zahl sein!");
     long teilersumme = 0;
-    for (int i = 1; i <= zahl; i++) {
+
+    for (long i = 1; i <= zahl; i++) {
       if (zahl % i == 0) {
-        teilersumme = teilersumme + i;
+        teilersumme += i;
       }
     }
     return teilersumme;
   }
 
+  /**
+   * Berechnung der Cheksumme einer ISBN-10
+   * @param isbn die 9-stellige isbn
+   * @return die Checksumme
+   */
   public static String berechneChecksummeIsbn(long isbn) {
-    int anzahlZiffern = (int) Math.log10(isbn) + 1;
-    int ergebnis = 0;
+    check(
+      isbn > 99999999 && isbn < 1000000000,
+      "zahl muss eine 9-stellige ganze Zahl sein!"
+    );
 
-    for (int i = anzahlZiffern; i >= 1; i--) {
-      ergebnis += (10 - i) * (int) Math.floor(isbn / Math.pow(10, i - 1) % 10);
+    long isbnZehner = 0;
+    for (int i = 9; isbn > 0; i--) {
+      isbnZehner = isbnZehner + (isbn % 10) * i;
+      isbn = isbn / 10;
     }
+    isbnZehner = isbnZehner % 11;
 
-    ergebnis = ergebnis % 11;
-    String pruefZiffer;
-
-    if (ergebnis == 0) {
-      pruefZiffer = "X";
+    if (isbnZehner == 10) {
+      return "X";
     } else {
-      pruefZiffer = String.valueOf(ergebnis);
+      return String.valueOf(isbnZehner);
     }
-    return isbn + pruefZiffer;
   }
 
-  static String berechneNullstellen(double p, double q) {
-    double Diskriminante = Math.pow((p / 2), 2) - q;
+  /**
+   * NullstellenBerechnung mithilfe der PQ-Formel
+   * @param p P
+   * @param q Q
+   * @return Formatierte Ausgabe des ergebnisses
+   */
+  public static String berechneNullstellen(double p, double q) {
+    double diskriminante = Math.pow((p / 2), 2) - q;
 
-    if (Diskriminante < 0) {
+    if (diskriminante < 0) {
       return "Komplexe Nullstellen";
     }
 
-    var x1 = -(p / 2) + Math.sqrt(Diskriminante);
-    var x2 = -(p / 2) - Math.sqrt(Diskriminante);
+    var x1 = -(p / 2) + Math.sqrt(diskriminante);
+    var x2 = -(p / 2) - Math.sqrt(diskriminante);
 
-    if (Diskriminante > 0) {
+    if (diskriminante > 0) {
       return "Zwei Nullstellen: " + x1 + "|" + x2;
     } else {
       return "Doppelte Nullstelle: " + x1;
     }
   }
 
-  public static void main(String[] args) {
-    System.out.println(berechneTeilersumme(6));
-    System.out.println(berechneChecksummeIsbn(383622862));
-    System.out.println(berechneNullstellen(1.5, 2.5));
+  /**
+   * Ueberpruefung einer Bedingung und Ausgabe einer Exception mit nachricht bei Fehler
+   * @param bedingung die Bedingung
+   * @param msg die Nachricht
+   */
+  public static void check(boolean bedingung, String msg) {
+    if (!bedingung) {
+      throw new IllegalArgumentException(msg);
+    }
   }
 }

@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=MathFunctionsDialog
+comment0.text=\r\n\ Dialog\ Klasse\ f\u00C3\u00BCr\ die\ Klasse\ MathFunctions.\r\n\r\n\ @author\ Raphael\ Kimbula\ &\ Siyamend\ Bozkurt\r\n\ @version\ 1.0\r\n
+comment1.params=
+comment1.target=void\ start()
+comment1.text=\r\nHauptschleife\ des\ Testprogramms\r\n
+comment2.params=
+comment2.target=int\ einlesenFunktion()
+comment2.text=\r\n\ Einlesen\ der\ auszufuehrenden\ Funktion\r\n\r\n\ @return\ identifirzierer\ der\ auszufuehrende\ Funktion\r\n
+comment3.params=funktion
+comment3.target=void\ ausfuehrenFunktion(int)
+comment3.text=\r\n\ Starten\ der\ ausgew\u00C3\u00A4hlten\ Funktion\r\n\r\n\ @param\ funktion\ die\ auszufuehrende\ Funktion\r\n\r\n
+comment4.params=args
+comment4.target=void\ main(java.lang.String[])
+comment4.text=\r\n\ Einstiegspunkt\ des\ Programms\r\n\r\n\ @param\ args\ Kommandozeilenargumente\r\n
+numComments=5
