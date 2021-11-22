@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -9,6 +10,7 @@ import java.util.Scanner;
 public class MathFunctionsDialog {
 
   private Scanner input = new Scanner(System.in);
+  boolean programmAktiv = true;
 
   /**
    *Klassenkonstanten
@@ -23,13 +25,16 @@ public class MathFunctionsDialog {
    */
   public void start() {
     int funktion = -1;
-    while (funktion != ENDE) {
+    while (programmAktiv) {
       try {
         funktion = einlesenFunktion();
         ausfuehrenFunktion(funktion);
-      } catch (Exception e) {
-        System.out.println("Fehlerhafte Eingabe");
+      } catch (InputMismatchException e) {
+        System.out.println(
+          "<FEHLER> Bitte Richtige Funktion aus dem menu waehlen! <FEHLER>"
+        );
         input.nextLine();
+        continue;
       }
     }
   }
@@ -41,6 +46,7 @@ public class MathFunctionsDialog {
    */
   private int einlesenFunktion() {
     int funktion;
+
     System.out.print(
       TEILERSUMME_BERECHNEN +
       ": Teilersumme berechnen; \n" +
@@ -51,9 +57,7 @@ public class MathFunctionsDialog {
       ENDE +
       ": beenden -> \n"
     );
-
     funktion = input.nextInt();
-    input.nextLine();
     return funktion;
   }
 
@@ -61,54 +65,86 @@ public class MathFunctionsDialog {
    * Starten der ausgewaehlten Funktion
    *
    * @param funktion die auszufuehrende Funktion
+   *@throws IllegalArgumentException bei falscher eingabe
    *
    */
-  private void ausfuehrenFunktion(int funktion) {
-    long zahl;
-    long isbn;
-    long n;
-    double p;
-    double q;
-    if (funktion == TEILERSUMME_BERECHNEN) {
-      try {
-        System.out.print("eine ganze positive Zahl eingeben: ");
-        zahl = input.nextLong();
-        System.out.print("\nTeilersumme von " + zahl + " = ");
-        System.out.println(MathFunctions.berechneTeilersumme(zahl) + "\n\n");
-      } catch (Exception e) {
-        System.out.println("Fehler bei Teilsummen Berechnung");
-      }
-    } else if (funktion == CHECKSUMME_ISBN_BERECHNEN) {
-      try {
-        System.out.print("eine 9-stellige ISBN eingeben: ");
-        isbn = input.nextLong();
-        System.out.println(
-          "\nDie Pruefziffer lautet: " +
-          MathFunctions.berechneChecksummeIsbn(isbn) +
-          "\n"
-        );
-      } catch (Exception e) {
-        System.out.println("Fehler bei ISBN Berechnung ");
-      }
-    } else if (funktion == NULLSTELLEN_BERECHNEN) {
-      try {
-        System.out.print("Wert fuer p eingeben: ");
-        p = input.nextDouble();
-        System.out.print("Wert fuer q eingeben: ");
-        q = input.nextDouble();
-        System.out.println(MathFunctions.berechneNullstellen(p, q) + "\n");
-      } catch (Exception e) {
-        System.out.println("Fehler bei ISBN Berechnung ");
-      }
-    } else if (funktion == ENDE) {
-      System.out.print("Programmende");
-      funktion = 0;
-    } else {
-      System.out.println("Falsche Funktion!");
+  private void ausfuehrenFunktion(int funktion)
+    throws IllegalArgumentException {
+    switch (funktion) {
+      case TEILERSUMME_BERECHNEN:
+        funktionTeilerSumme();
+        break;
+      case CHECKSUMME_ISBN_BERECHNEN:
+        funktionISBN();
+        break;
+      case NULLSTELLEN_BERECHNEN:
+        funktionNullstellen();
+        break;
+      case ENDE:
+        funktionProgrammEnde();
+        break;
+      default:
+        throw new InputMismatchException();
     }
   }
 
-  /**
+  private void funktionProgrammEnde() {
+    programmAktiv = false;
+    System.out.print("Programm wird beendet ...");
+  }
+
+  private void zeigeEingabeFehlerInKonsole(String message) {
+    System.out.println(message);
+    input.nextLine();
+  }
+
+  private void funktionTeilerSumme() {
+    try {
+      System.out.print("eine ganze positive Zahl eingeben: ");
+      long zahl = input.nextLong();
+      long teilersumme = MathFunctions.berechneTeilersumme(zahl);
+      System.out.println(
+        "\n<=== Teilersumme von " + zahl + " | " + teilersumme + "  ===>\n"
+      );
+    } catch (Exception e) {
+      zeigeEingabeFehlerInKonsole("Bitte Positive Ganze Zahl eingeben!");
+      funktionTeilerSumme();
+    }
+  }
+
+  private void funktionISBN() {
+    try {
+      System.out.print("eine 9-stellige ISBN eingeben: ");
+      long isbn = input.nextLong();
+      String pruefziffer = MathFunctions.berechneChecksummeIsbn(isbn);
+      System.out.println(
+        "\n<=== ISBN-Pruefziffer | " + pruefziffer + " ===>\n"
+      );
+    } catch (Exception e) {
+      zeigeEingabeFehlerInKonsole("Bitte korrekte ISBN eingeben!");
+      funktionISBN();
+    }
+  }
+
+  private void funktionNullstellen() {
+    try {
+      double p;
+      double q;
+      System.out.print("Nullstellenberechnung - p (zahl): ");
+      p = input.nextDouble();
+      System.out.print("Nullstellenberechnung - q (zahl): ");
+      q = input.nextDouble();
+      String nullstellen = MathFunctions.berechneNullstellen(p, q);
+      System.out.println("\n<=== Nullstellen | " + nullstellen + " ===>\n");
+    } catch (Exception e) {
+      zeigeEingabeFehlerInKonsole(
+        "Bitte korrekte Werte fuer p und q eingeben!"
+      );
+      funktionNullstellen();
+    }
+  }
+
+  /**4
    * Einstiegspunkt des Programms
    *
    * @param args Kommandozeilenargumente
