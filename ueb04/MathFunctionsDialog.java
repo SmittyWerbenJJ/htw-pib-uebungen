@@ -6,7 +6,7 @@ import java.util.Scanner;
  * ubung04
  *
  * @author Raphael Kimbula
- * @version 0.1
+ * @version 0.2
  */
 public class MathFunctionsDialog {
 
@@ -16,10 +16,20 @@ public class MathFunctionsDialog {
   private static final int TEILERSUMME_BERECHNEN = 1;
   private static final int CHECKSUMME_ISBN_BERECHNEN = 2;
   private static final int NULLSTELLEN_BERECHNEN = 3;
-  private static final int GGT_BERECHNEN = 4;
-  private static final int FAKULTAET_BERECHNEN = 5;
-  private static final int REIHENSUMME_BERECHNEN = 6;
+  private static final int SUMME_VON_POTENZEN_BERECHNEN = 4;
+  private static final int GGT_BERECHNEN = 5;
+  private static final int FAKULTAET_BERECHNEN = 6;
+  private static final int REIHENSUMME_BERECHNEN = 7;
   private static final int ENDE = 0;
+
+  /**
+   * Einstiegspunkt des Programms
+   *
+   * @param args Kommandozeilenargumente
+   */
+  public static void main(String[] args) {
+    new MathFunctionsDialog().start();
+  }
 
   /**
    *Hauptschleife des programms
@@ -36,8 +46,18 @@ public class MathFunctionsDialog {
         );
         input.nextLine();
         continue;
+      } catch (Exception e) {
+        zeigeFehlerInKonsole(e.getMessage());
       }
     }
+  }
+
+  /**
+   * methode zur anweisung des beendens des programms im nachsten update
+   */
+  private void funktionProgrammEnde() {
+    programmAktiv = false;
+    System.out.print("Programm wird beendet ...");
   }
 
   /**
@@ -55,6 +75,8 @@ public class MathFunctionsDialog {
       ": Pruefziffer der ISBN berechne; \n" +
       NULLSTELLEN_BERECHNEN +
       ": Nullstellen von p und q berechnen \n" +
+      SUMME_VON_POTENZEN_BERECHNEN +
+      ": Summe von Potenzen berechnen \n" +
       GGT_BERECHNEN +
       ": GGT berechnen \n" +
       FAKULTAET_BERECHNEN +
@@ -90,6 +112,9 @@ public class MathFunctionsDialog {
       case ENDE:
         funktionProgrammEnde();
         break;
+      case SUMME_VON_POTENZEN_BERECHNEN:
+        funktionSummeVonPotenzen();
+        break;
       case GGT_BERECHNEN:
         funktionGGT();
         break;
@@ -107,93 +132,9 @@ public class MathFunctionsDialog {
   /**
    * methode zur ausgabe einer meldung in der konsole und befreiung des input buffer
    */
-  private void zeigeEingabeFehlerInKonsole(String message) {
-    System.out.println("\n<ACHTUNG> " + message + "<ACHTUNG>\n");
+  private void zeigeFehlerInKonsole(String message) {
+    System.out.println("\n<ACHTUNG> " + message + " <ACHTUNG>\n");
     input.nextLine();
-  }
-
-  /**
-   * methode zur berechnung von reihensumme mit konsolen-gui
-   */
-  private void funktionReihensumme() {
-    boolean canExecute = false;
-    int anzahl = 0;
-    double x = 0.0;
-
-    while (!canExecute) {
-      try {
-        System.out.print("Reihensumme Berechnen  | anzahl n (int) : ");
-        anzahl = input.nextInt();
-      } catch (Exception e) {
-        zeigeEingabeFehlerInKonsole("Bitte Natürliche Zahlen eingeben!");
-      }
-      try {
-        System.out.print("Reihensumme Berechnen  | x (double) : ");
-        x = input.nextDouble();
-      } catch (Exception e) {
-        zeigeEingabeFehlerInKonsole("Bitte Kommazahl eingeben!");
-      }
-      canExecute = true;
-    }
-    double reihensumme = MathFunctions.berechneReihensumme(anzahl, x);
-
-    System.out.printf(
-      "\n<=== Reihensumme von n=%d und x=%f) | %f ===>\n",
-      anzahl,
-      x,
-      reihensumme
-    );
-  }
-
-  /**
-   * methode zur berechnung von groesster gemeinsamer teiler (ggt)  mit konsolen-gui
-   */
-
-  private void funktionGGT() {
-    try {
-      System.out.print("GGT Berechnen  | zahl1 : ");
-      int zahl1 = input.nextInt();
-      System.out.print("GGT Berechnen | zahl2 : ");
-      int zahl2 = input.nextInt();
-      int ggt = MathFunctions.berechneGGT(zahl1, zahl2);
-
-      System.out.printf(
-        "\n<=== GGT von (%d,%d) | %d ===>\n",
-        zahl1,
-        zahl2,
-        ggt
-      );
-    } catch (Exception e) {
-      zeigeEingabeFehlerInKonsole("Bitte Natürliche Zahlen eingeben!");
-      funktionGGT();
-    }
-  }
-
-  /**
-   * methode zur berechnung von fakultaet  mit konsolen-gui
-   */
-  private void funktionFakultaet() {
-    try {
-      System.out.print("Fakultaet Berechnen | zahl : ");
-      int zahl = input.nextInt();
-      long fak = MathFunctions.berechneFakultaet(zahl);
-      if (fak == 0) {
-        System.out.printf(
-          "\n<=== Fakultaet von %d | >%d ===>\n",
-          zahl,
-          Long.MAX_VALUE
-        );
-      } else {
-        System.out.printf("\n<=== Fakultaet von %d | %d ===>\n\n", zahl, fak);
-      }
-    } catch (ArithmeticException e) {
-      zeigeEingabeFehlerInKonsole(
-        "Berechnete Fakultaet zu gross fur die darstellung als {long} !"
-      );
-    } catch (Exception e) {
-      zeigeEingabeFehlerInKonsole("Bitte Natürliche Zahlen eingeben!");
-      funktionFakultaet();
-    }
   }
 
   /**
@@ -208,7 +149,7 @@ public class MathFunctionsDialog {
         "\n<=== Teilersumme von " + zahl + " | " + teilersumme + "  ===>\n"
       );
     } catch (Exception e) {
-      zeigeEingabeFehlerInKonsole("Bitte Positive Ganze Zahl eingeben!");
+      zeigeFehlerInKonsole("Bitte Positive Ganze Zahl eingeben!");
       funktionTeilerSumme();
     }
   }
@@ -225,7 +166,7 @@ public class MathFunctionsDialog {
         "\n<=== ISBN-Pruefziffer | " + pruefziffer + " ===>\n"
       );
     } catch (Exception e) {
-      zeigeEingabeFehlerInKonsole("Bitte korrekte ISBN eingeben!");
+      zeigeFehlerInKonsole("Bitte korrekte ISBN eingeben!");
       funktionISBN();
     }
   }
@@ -244,27 +185,127 @@ public class MathFunctionsDialog {
       String nullstellen = MathFunctions.berechneNullstellen(p, q);
       System.out.println("\n<=== Nullstellen | " + nullstellen + " ===>\n");
     } catch (Exception e) {
-      zeigeEingabeFehlerInKonsole(
-        "Bitte korrekte Werte fuer p und q eingeben!"
-      );
+      zeigeFehlerInKonsole("Bitte korrekte Werte fuer p und q eingeben!");
       funktionNullstellen();
     }
   }
 
   /**
-   * methode zur anweisung des beendens des programms im nachsten update
+   * methode zur berechnung von Summe von Potenzen mit konsolen-gui
    */
-  private void funktionProgrammEnde() {
-    programmAktiv = false;
-    System.out.print("Programm wird beendet ...");
+  private void funktionSummeVonPotenzen() {
+    boolean canExecute = false;
+    long zahl = 0;
+
+    while (!canExecute) {
+      try {
+        System.out.print("Summe von Potenzen Berechnen  | zahl (long) : ");
+        zahl = input.nextLong();
+      } catch (Exception e) {
+        zeigeFehlerInKonsole("Bitte eine Natuerliche Zahl eingeben!");
+      }
+      canExecute = true;
+    }
+    boolean ergebnis = MathFunctions.istSummeVonPotenzen(zahl);
+
+    String ergebnisText = "";
+    if (ergebnis == false) {
+      ergebnisText = "KEINE";
+    }
+    System.out.printf(
+      "\n<=== %d ist %s Summe von Potenzen a^4 + b^3 + c^2  ===>\n\n",
+      zahl,
+      ergebnisText,
+      ergebnis
+    );
   }
 
   /**
-   * Einstiegspunkt des Programms
-   *
-   * @param args Kommandozeilenargumente
+   * methode zur berechnung von reihensumme mit konsolen-gui
    */
-  public static void main(String[] args) {
-    new MathFunctionsDialog().start();
+  private void funktionReihensumme() {
+    boolean canExecute = false;
+    int anzahl = 0;
+    double x = 0.0;
+
+    while (!canExecute) {
+      try {
+        System.out.print("Reihensumme Berechnen  | anzahl n (int) : ");
+        anzahl = input.nextInt();
+        if (anzahl < 1) {
+          throw new Exception();
+        }
+      } catch (Exception e) {
+        zeigeFehlerInKonsole("Bitte Natuerliche Zahlen eingeben!");
+        continue;
+      }
+
+      try {
+        System.out.print("Reihensumme Berechnen  | x (double) : ");
+        x = input.nextDouble();
+      } catch (Exception e) {
+        zeigeFehlerInKonsole("Bitte Kommazahl eingeben!");
+        continue;
+      }
+
+      canExecute = true;
+    }
+    double reihensumme = MathFunctions.berechneReihensumme(anzahl, x);
+    if (Double.isNaN(reihensumme)) {
+      zeigeFehlerInKonsole("Zahl zu gross fuer den datentyp Double!");
+    } else {
+      System.out.printf(
+        "\n<=== Reihensumme von n=%d und x=%f) | %g ===>\n",
+        anzahl,
+        x,
+        reihensumme
+      );
+    }
+  }
+
+  /**
+   * methode zur berechnung von groesster gemeinsamer teiler (ggt)  mit konsolen-gui
+   */
+
+  private void funktionGGT() {
+    int zahl1 = 0;
+    int zahl2 = 0;
+    try {
+      System.out.print("GGT Berechnen  | zahl1 : ");
+      zahl1 = input.nextInt();
+      System.out.print("GGT Berechnen | zahl2 : ");
+      zahl2 = input.nextInt();
+    } catch (Exception e) {
+      zeigeFehlerInKonsole("Bitte Natuerliche Zahlen eingeben!");
+      return;
+    }
+
+    int ggt = MathFunctions.berechneGGT(zahl1, zahl2);
+    System.out.printf("\n<=== GGT von (%d,%d) | %d ===>\n", zahl1, zahl2, ggt);
+  }
+
+  /**
+   * methode zur berechnung von fakultaet  mit konsolen-gui
+   */
+  private void funktionFakultaet() {
+    System.out.print("Fakultaet Berechnen | zahl : ");
+    int zahl = 0;
+    try {
+      zahl = input.nextInt();
+    } catch (InputMismatchException e) {
+      zeigeFehlerInKonsole("Bitte naturliche zahle eingeben");
+    }
+
+    if (zahl > 20) {
+      zeigeFehlerInKonsole("Zahl zu gross zum darstellen");
+      return;
+    }
+    if (zahl < 0) {
+      zeigeFehlerInKonsole("Keine Negative zahl erlaubt");
+      return;
+    }
+
+    long fak = MathFunctions.berechneFakultaet(zahl);
+    System.out.printf("\n<=== Fakultaet von %d | %d ===>\n\n", zahl, fak);
   }
 }

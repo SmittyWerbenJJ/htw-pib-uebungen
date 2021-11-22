@@ -5,10 +5,15 @@ import java.math.BigInteger;
  * ubung04
  *
  * @author Raphael Kimbula
- * @version v0.1
+ * @version v0.2
  */
 
 public class MathFunctions {
+
+  /**
+   * Privater Konstruktor -> keine Instanz erlauben
+   */
+  private MathFunctions() {}
 
   /**
    * Berechnung einer Teilersumme
@@ -16,7 +21,7 @@ public class MathFunctions {
    * @return die TeilerSumme
    */
   public static long berechneTeilersumme(long zahl) {
-    if (zahl < 0 == true) {
+    if (zahl < 0) {
       throw new IllegalArgumentException("Zahl muss eine positive Zahl sein");
     }
 
@@ -36,9 +41,9 @@ public class MathFunctions {
       }
     } else {
       /*ungerade zahl */
-      //1. durchlauf:hälfte der zahl
+      //1. durchlauf:haelfte der zahl
       long range = zahl / (long) 2;
-      //2. durchlauf von hälfte der zahl bis >1
+      //2. durchlauf von haelfte der zahl bis >1
       for (long i = range; i > 1; i--) {
         if (zahl % i == 0) {
           teilersumme += i;
@@ -55,10 +60,11 @@ public class MathFunctions {
    * @return die Checksumme
    */
   public static String berechneChecksummeIsbn(long isbn) {
-    check(
-      isbn > 99999999 && isbn < 1000000000,
-      "zahl muss eine 9-stellige ganze Zahl sein!"
-    );
+    if (isbn > 99999999 && isbn < 1000000000) {
+      throw new IllegalArgumentException(
+        "zahl muss eine 9-stellige ganze Zahl sein!"
+      );
+    }
 
     long isbnZehner = 0;
     for (int i = 9; isbn > 0; i--) {
@@ -102,26 +108,25 @@ public class MathFunctions {
    * zahl = a^4 + a^3 + c^2
    * @param zahl die zu prufende zahl
    * @return ergebnis der prufung
+   * @throws IllegalArgumentException Wenn <code>zahl</code> kleiner 1 ist
    */
   public static boolean istSummeVonPotenzen(long zahl) {
-    /* a b c suchen
-      prufen ob zahl == a^4 + b^3 + c^2
-    */
-    boolean ergebnis = false;
-    // long berechneSumme(int a ,int b,int c){
-    //   return (a*a*a*a) + (b*b*b) + (c*c);
-    // }
-    return ergebnis;
+    throw new UnsupportedOperationException("Funktion nicht Impelemtiert");
   }
 
   /***
-   * den ggt von 2 zahlen berechnen
-   * @param zahl1
-   * @param zahl2
-   * @return den ggt
+   * den GGT von 2 zahlen berechnen
+   * @param zahl1 die erste zahl
+   * @param zahl2 die zweite zahl
+   * @return den berechnetet GG
+   * @throws IllegalArgumentException wenn eine negative zahl eingegeben wird
    */
+  public static int berechneGGT(int zahl1, int zahl2)
+    throws IllegalArgumentException {
+    if (zahl1 < 1 || zahl2 < 1) {
+      throw new IllegalArgumentException("Nur Naturliche zahlen erlaubt!");
+    }
 
-  public static int berechneGGT(int zahl1, int zahl2) {
     int bigNumber = Math.max(zahl1, zahl2);
     int smallNumber = Math.min(zahl1, zahl2);
     int ggt = 1;
@@ -151,9 +156,16 @@ public class MathFunctions {
    * berechnet die fakultaet
    * @param zahl die zu berechnende zahl
    * @return die berechnetefakultaet. ist
-   * @throws ArithmeticException wenn die fakultaet zu groß für {@code long} ist
+   * @throws IllegalArgumentException wenn die  eingegebene zahl negative ist
+   * @throws ArithmeticException wenn die fakultaet zu groß fuer {@code long} ist oder eingegebene zahl negative ist
    */
-  public static long berechneFakultaet(int zahl) {
+  public static long berechneFakultaet(int zahl)
+    throws ArithmeticException, IllegalArgumentException {
+    if (zahl < 0) {
+      throw new IllegalArgumentException("Nur Naturliche Zahl erlaubt");
+    } else if (zahl > 20) {
+      throw new ArithmeticException("Zahl zu gross fur die ausgabe als long");
+    }
     BigInteger fakultaet = BigInteger.ONE;
 
     for (int i = 2; i <= zahl; i++) {
@@ -167,8 +179,14 @@ public class MathFunctions {
    * @param anzahl die Anzahl n
    * @param x das X
    * @return die berechnete Reihensumme
+   * @throws IllegalArgumentException wenn anzahl kleiner 1 ist
+   * @throws ArithmeticException wenn das Ergebnis nicht gultig ist
    */
-  public static double berechneReihensumme(int anzahl, double x) {
+  public static double berechneReihensumme(int anzahl, double x)
+    throws IllegalArgumentException, ArithmeticException {
+    if (anzahl < 1) {
+      throw new IllegalArgumentException("anzahl muss >=1 sein!");
+    }
     int n = anzahl;
 
     double reihensumme = 0.0;
@@ -181,17 +199,9 @@ public class MathFunctions {
         reihensumme += divident / divisor;
       }
     }
-    return reihensumme;
-  }
-
-  /**
-   * Ueberpruefung einer Bedingung und Ausgabe einer Exception mit nachricht bei Fehler
-   * @param bedingung die Bedingung
-   * @param msg die Nachricht
-   */
-  public static void check(boolean bedingung, String msg) {
-    if (!bedingung) {
-      throw new IllegalArgumentException(msg);
+    if (Double.isNaN(reihensumme)) {
+      throw new ArithmeticException("Das Ergebnis ist zu gross");
     }
+    return reihensumme;
   }
 }
