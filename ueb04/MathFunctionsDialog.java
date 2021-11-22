@@ -5,7 +5,7 @@ import java.util.Scanner;
  * Dialog Klasse fuer die Klasse MathFunctions
  * ubung04
  *
- * @author Raphael Kimbula
+ * @author Raphael Kimbula & Siyamend Bozkurt
  * @version 0.2
  */
 public class MathFunctionsDialog {
@@ -250,6 +250,10 @@ public class MathFunctionsDialog {
 
       canExecute = true;
     }
+
+    /**
+     * methode zur berechnung der Reihensumme  mit konsolen-gui
+     */
     double reihensumme = MathFunctions.berechneReihensumme(anzahl, x);
     if (Double.isNaN(reihensumme)) {
       zeigeFehlerInKonsole("Zahl zu gross fuer den datentyp Double!");
@@ -266,7 +270,6 @@ public class MathFunctionsDialog {
   /**
    * methode zur berechnung von groesster gemeinsamer teiler (ggt)  mit konsolen-gui
    */
-
   private void funktionGGT() {
     int zahl1 = 0;
     int zahl2 = 0;

@@ -4,7 +4,7 @@ import java.math.BigInteger;
  * Sammlung an Mathe Funktionen
  * ubung04
  *
- * @author Raphael Kimbula
+ * @author Raphael Kimbula & Siyamend Bozkurt
  * @version v0.2
  */
 
