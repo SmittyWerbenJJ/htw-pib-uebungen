@@ -1,0 +1,1 @@
+javac LinkFilter.java &&  cat test_html.html | java LinkFilter
