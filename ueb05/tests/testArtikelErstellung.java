@@ -1,15 +1,8 @@
 package tests;
 
 import src.*;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-
 import org.junit.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 /**
  * Die Test-Klasse
@@ -23,6 +16,7 @@ public class testArtikelErstellung {
     @Test
     public void erstelleArtikel_korrekte_NR_Art() {
         einArtikel = new Artikel(1234, "banane");
+
         assertNotNull(einArtikel);
     }
 
@@ -44,7 +38,6 @@ public class testArtikelErstellung {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    @DisplayName("erstellen eines artikels mit 5 stelliger aritkelnummer -> Sollte fehler werfen")
     public void erstelleArtikel_Falsche_NR_5stellig() {
         einArtikel = new Artikel(13234, "banane");
 

@@ -1,15 +1,8 @@
 package tests;
 
 import src.*;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-
 import org.junit.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 /**
  * Die Test-Klasse
@@ -21,6 +14,7 @@ public class testArtikelMethoden {
     Artikel einArtikel;
 
     double TESTartikelPreis;
+    final double epsilon = 1e-7d;
     int TestArtikelNr;
     int TestArtikelBestand;
     String TestArtikelArt;
@@ -85,14 +79,14 @@ public class testArtikelMethoden {
 
     @Test
     public void getBestand_korrekter_Bestand() {
-        assertEquals(einArtikel.getBestand(), TESTartikelPreis);
+        assertEquals(einArtikel.getBestand(), TESTartikelPreis, epsilon);
     }
 
     @Test
     public void buche_abgang_korrekt_wenigerAlsImBestand() {
-        int erwarteterBestand = 1;
+        int erwarteterBestand = TestArtikelBestand - 1;
         einArtikel.bucheAbgang(TestArtikelBestand - 1);
-        assertEquals(einArtikel.getBestand(), TestArtikelBestand-1);
+        assertEquals(einArtikel.getBestand(), erwarteterBestand);
     }
 
     @Test
@@ -103,7 +97,7 @@ public class testArtikelMethoden {
 
     @Test
     public void buche_abgang_falsch_mehrAlsVorhanden() {
-       qArtikel.bucheAbgang(TestArtikelBestand + 1);
+        einArtikel.bucheAbgang(TestArtikelBestand + 1);
         assertEquals(einArtikel.getBestand(), TestArtikelBestand);
     }
 
@@ -111,14 +105,14 @@ public class testArtikelMethoden {
     public void setPreis_korrekt_100() {
         Double erwartet = 100d;
         einArtikel.setPreis(erwartet);
-        assertEquals(erwartet, einArtikel.getPreis());
+        assertEquals(erwartet, einArtikel.getPreis(), epsilon);
     }
 
     @Test
     public void setPreis_korrekt_cent() {
         Double erwartet = 0.01;
         einArtikel.setPreis(erwartet);
-        assertEquals(erwartet, einArtikel.getPreis());
+        assertEquals(erwartet, einArtikel.getPreis(), epsilon);
     }
 
     @Test(expected = IllegalArgumentException.class)
