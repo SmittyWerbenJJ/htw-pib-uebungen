@@ -1,7 +1,6 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import src.*;
 import org.junit.*;
-import org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 /**
  * Die Test-Klasse
