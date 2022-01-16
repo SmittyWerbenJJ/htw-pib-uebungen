@@ -7,7 +7,7 @@ package src;
  * Attribute auflisten und einzeln anzeigen.
  *
  * @author Raphael Kimbula & Siyamend Bozkurt
- * @version 2021.11.29
+ * @version 09.01.2022
  */
 public class Artikel {
 
@@ -46,7 +46,7 @@ public class Artikel {
   public Artikel(int artikelNr, String art, int bestand) {
     this(artikelNr, art);
     if (bestand < 0) {
-      throw new IllegalArgumentException("Bestand kann nicht negativ sein!");
+      bestand = 0;
     }
     this.bestand = bestand;
   }
@@ -91,47 +91,27 @@ public class Artikel {
     this.preis = preis;
   }
 
-  /**
-   * Erhalte die Artikelnummer
-   * 
-   * @return die ArtikelNummer
-   */
+  public String toString() {
+    String ausgabe = "Artikel: " + this.artikelNr + ", Art: " + this.art + ", Bestand: " + this.bestand;
+    return ausgabe;
+  }
+
   public int getArtikelNr() {
     return this.artikelNr;
   }
 
-  /**
-   * Erhalte die ArtikelArt.
-   *
-   * @return die ArtikelArt
-   */
   public String getArt() {
     return this.art;
   }
 
-  /**
-   * erhalte den preis dieses artikels
-   * 
-   * @return den Preis
-   */
-  public double getPreis() {
+  public double getBestand() {
     return this.preis;
   }
 
-  /**
-   * Erhalte den bestand des Artikels
-   *
-   * @return den Bestand
-   */
-  public int getBestand() {
+  public double getPreis() {
     return this.bestand;
   }
 
-  /**
-   * Setze die Artikelnummer
-   *
-   * @param neueArtikelNr die neue Artikelnummer
-   */
   public void setArtikelNr(int neueArtikelNr) {
     if (istArtikelnummerValide(neueArtikelNr) == false) {
       throw new IllegalArgumentException("Artikelnummer muss eine Positive 4-Stellige Zahl sein");
@@ -139,11 +119,6 @@ public class Artikel {
     this.artikelNr = neueArtikelNr;
   }
 
-  /**
-   * Setze die Artikelart
-   *
-   * @param neueArt die qNeue Artikelart
-   */
   public void setArt(String neueArt) {
     if (neueArt.isBlank()) {
       throw new IllegalArgumentException("neueArt darf nicht leer oder aus nur aus leerzeichen bestehen");
@@ -192,19 +167,6 @@ public class Artikel {
     }
   }
 
-  /***
-   * Ausgabe der Infos über das Object
-   */
-  public String toString() {
-    String ausgabe = "Artikel: " +
-        this.artikelNr +
-        ", Art: " +
-        this.art +
-        ", Bestand: " +
-        this.bestand;
-    return ausgabe;
-  }
-
   /**
    * uberprufung ob eine zahl fast null ist - 3 nachkommastellen
    * 
@@ -228,5 +190,4 @@ public class Artikel {
     return zahl >= 1000 && zahl <= 9999;
   }
 
-  // #endregion
 }

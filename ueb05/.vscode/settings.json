@@ -1,5 +1,5 @@
 {
     "java.project.referencedLibraries": [
-        "../junit5/junit5.jar"
+        "c:/program files/java/junit5/*"
     ]
 }

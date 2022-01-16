@@ -9,11 +9,6 @@ import java.util.*;
  * @version 0.2
  */
 public class ArtikelDialog {
-
-  private Scanner input;
-  private Lager lager;
-  private boolean exit;
-
   private static final int PROGRAMM_ENDE = 0;
   private static final int ERSTELLE_OHNE_BESTAND = 1;
   private static final int ERSTELLE_MIT_BESTAND = 2;
@@ -27,15 +22,17 @@ public class ArtikelDialog {
   private static final String FEHLERHAFTE_EINGABE_BITTE_EINE_GANZZAHL_INT_EINGEBEN = "Fehlerhafte Eingabe, Bitte eine Ganzzahl (int) eingeben.";
 
   private static final String HINT_ARTIKELART = "ArtikelArt (text)";
-  private static final String HINT_ARTIKELNR = "ArtikelNummer (Zahl)";
+  private static final String HINT_ARTIKELNR = "ArtikelNummer (Zahl,Vierstellig)";
   private static final String HINT_ARTIKELPREIS = "Artikel Preis (Kommazahl)";
   private static final String HINT_ARTIKELBESTAND = "Artikel Bestand (Zahl)";
+  private static final String KEIN_LAGER_VORHANDEN = "Kein Lager Vorhanden! Bitte Lager anlegen";
+  private static final String ARTIKEL_BEREITS_IM_LAGER = "Artikel existiert Bereits";
+  private static final Character STRING_INPUT_ESCAPE_CHAR = '_';
 
-  /**
-   * Main Methode
-   *
-   * @param args Argumente
-   */
+  private Scanner input;
+  private Lager lager;
+  private boolean exit;
+
   public static void main(String[] args) {
     ArtikelDialog dialog = new ArtikelDialog();
     dialog.Start();
@@ -73,18 +70,18 @@ public class ArtikelDialog {
    */
   private int zeigeMenu() {
     String newline = "\n";
-    String menuText = "\n==========| HauptMenu | ==========\n" +
+    String menuText = "\n==========| HauptMenu |==========\n" +
         PROGRAMM_ENDE +
         ": Programm Beenden" +
         newline +
         ERSTELLE_OHNE_BESTAND +
-        ": Neuer Artikel erstellen, ohne Bestand" +
+        ": Neuer Artikel erstellen(ID,Art)" +
         newline +
         ERSTELLE_MIT_BESTAND +
-        ": Neuer Artikel erstellen, mit Bestand" +
+        ": Neuer Artikel erstellen(ID,Bestand,Art)" +
         newline +
         ERSTELLE_MIT_Preis +
-        ": Neuer Artikel erstellen, mit Preis" +
+        ": Neuer Artikel erstellen(ID,Art,Bestand,Preis)" +
         newline +
         BUCHE_ABGANG +
         ": Abgangsbuchung" +
@@ -140,106 +137,167 @@ public class ArtikelDialog {
     }
   }
 
+  /**
+   * Erstellt ein Neues Lager mit 10 plätzen
+   */
   private void erstelleLager() {
     lager = new Lager(10);
     ausgabeInKonsole("Es wurde ein Neues Lager mit 10 Plaetzen erstellt", true);
   }
 
+  /**
+   * Erstellt ein Neuen Artikel Ohne Bestand (ID,Art)
+   * 
+   * @throws Exception
+   */
   private void erstelleArtikelOhneBestand() {
-    int artikelNr = 0;
-    String art = "art";
-
-    ausgabeInKonsole("\n" + HINT_ARTIKELNR + ":");
-    try {
-      artikelNr = einlesenInt();
-    } catch (InputMismatchException e) {
-      fehlerAusgabeInKonsole(e);
+    if (checkLagerVorhanden() == false) {
+      ausgabeInKonsole(formatiereMenueTitelInKonsole(KEIN_LAGER_VORHANDEN));
       return;
     }
-
-    ausgabeInKonsole(HINT_ARTIKELART + ":");
-    try {
-      art = einlesenText();
-    } catch (InputMismatchException e) {
-      fehlerAusgabeInKonsole(e);
+    ausgabeInKonsole(formatiereMenueTitelInKonsole("Neuer Artikel: Ohne Bestand"));
+    int artikelNr = einlesenArtikelnummer();
+    if (artikelNr == -1) {
+      return;
+    }
+    if (lager.istArtikelImLager(artikelNr)) {
+      ausgabeInKonsole(ARTIKEL_BEREITS_IM_LAGER);
+      return;
+    }
+    String art = einlesenArtikelArt();
+    if (art == Character.toString(STRING_INPUT_ESCAPE_CHAR)) {
       return;
     }
 
     Artikel artikel = new Artikel(artikelNr, art);
-    ausgabeInKonsole("Neuer Artikel erstellt: '" + artikel.toString(), true);
+    lager.legeAnArtikel(artikel);
+    ausgabeInKonsole(formatiereMenueTitelInKonsole("ES wurde ein neuer Artikel angelegt!"));
+    return;
   }
 
+  /**
+   * Erstellt ein Artikel mit Bestand (ID,Art,Bestand)
+   */
   private void erstelleArtikelMitBestand() {
-    int artikelNr = 0;
-    int bestand = 0;
-    String art = "art";
-
-    ausgabeInKonsole("\n Neuer Artikel mit Bestand:\n", true);
-    ausgabeInKonsole("\n" + HINT_ARTIKELNR + ":");
-    try {
-      artikelNr = einlesenInt();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    ausgabeInKonsole(formatiereMenueTitelInKonsole("Neuer Artikel mit Bestand"));
+    int artikelNr = einlesenArtikelnummer();
+    if (artikelNr == -1) {
       return;
     }
-
-    ausgabeInKonsole("\n" + HINT_ARTIKELART + ":");
-    try {
-      art = einlesenText();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    int bestand = einlesenArtikelBestand();
+    if (bestand == -1) {
       return;
     }
-
-    ausgabeInKonsole("\n" + HINT_ARTIKELBESTAND + ":");
-    try {
-      bestand = einlesenInt();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    String art = einlesenArtikelArt();
+    if (art == Character.toString(STRING_INPUT_ESCAPE_CHAR)) {
       return;
     }
     Artikel artikel = new Artikel(artikelNr, art, bestand);
     lager.legeAnArtikel(artikel);
   }
 
+  /**
+   * Erstellt einen Artikel mit Gegebenen Preis (ID,Art,Bestand,Preis)
+   */
   private void erstelleArtikelMitPreis() {
-    int artikelNr = 0;
-    String art = "art";
-    int bestand = 0;
-    double preis = 0d;
-
-    ausgabeInKonsole("\n Neuer Artikel mit Preis:\n", true);
-    ausgabeInKonsole("\n" + HINT_ARTIKELNR + ":");
-    try {
-      artikelNr = einlesenInt();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    ausgabeInKonsole(formatiereMenueTitelInKonsole("Neuer Artikel mit Preis"));
+    int artikelNr = einlesenArtikelnummer();
+    if (artikelNr == -1) {
       return;
     }
-    ausgabeInKonsole("\n" + HINT_ARTIKELART + ":");
-    try {
-      art = einlesenText();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    String art = einlesenArtikelArt();
+    if (art == Character.toString(STRING_INPUT_ESCAPE_CHAR)) {
       return;
     }
-    ausgabeInKonsole("\n" + HINT_ARTIKELBESTAND + ":");
-    try {
-      bestand = einlesenInt();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    int bestand = einlesenArtikelBestand();
+    if (bestand == -1) {
       return;
     }
-    ausgabeInKonsole("\n" + HINT_ARTIKELPREIS + ":");
-    try {
-      preis = einlesenDouble();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+    double preis = einlesenArtikelPreis();
+    if (bestand == -1) {
       return;
     }
 
     Artikel artikel = new Artikel(artikelNr, art, bestand, preis);
     lager.legeAnArtikel(artikel);
+  }
+
+  /**
+   * einlesen eines string in CUI
+   * abbrechen durch eingabe von int: {@code -1}
+   * 
+   * @return die eingelesene artikelnummer. -1 bei abbruch
+   */
+  private int einlesenArtikelnummer() {
+    boolean validInput = false;
+    boolean cancel = false;
+    int artikelNr = -1;
+    while (validInput == false && cancel == false) {
+      try {
+        ausgabeInKonsole("\n" + HINT_ARTIKELNR + " (Abbrechen mit -1):");
+        artikelNr = einlesenInt();
+        validInput = Artikel.istArtikelnummerValide(artikelNr);
+        cancel = artikelNr == -1;
+      } catch (InputMismatchException e) {
+        ausgabeInKonsole("Bitte ganzzahligeArtikelNr eingeben. NUmmer darf nicht negativ sein. -1 um Abzubrechen");
+      }
+    }
+    return artikelNr;
+  }
+
+  /**
+   * einlesen eines string in CUI
+   * abbrechen durch eingabe von char: {@code _}
+   * 
+   * @return den eingelesenen string. "_" bei abbruch
+   */
+  private String einlesenArtikelArt() {
+    String art = Character.toString(STRING_INPUT_ESCAPE_CHAR);
+    while (art.charAt(0) == STRING_INPUT_ESCAPE_CHAR || art.isBlank()) {
+      ausgabeInKonsole("\n" + HINT_ARTIKELART + "(abbrechen mit: _ ):");
+      try {
+        art = einlesenText();
+      } catch (InputMismatchException e) {
+        ausgabeInKonsole("\n" + HINT_ARTIKELART + "(abbrechen mit: _ ):");
+      }
+    }
+    return art;
+  }
+
+  /**
+   * einlesen ArtikelPreis in CUI
+   * 
+   * @return den eingelesneen ArtikelPres. -1 bei abbruch
+   */
+  private double einlesenArtikelPreis() {
+    double preis = -1;
+    while (preis == -1) {
+      ausgabeInKonsole("\n" + HINT_ARTIKELPREIS + "(Abbrechen mit -1):");
+      try {
+        preis = einlesenDouble();
+      } catch (InputMismatchException e) {
+        ausgabeInKonsole("Bitte ArtikelPreis eingeben. NUmmer darf nicht negativ sein. -1 um Abzubrechen");
+      }
+    }
+    return preis;
+  }
+
+  /**
+   * einlesen des ArtikelBestands in CUI
+   * 
+   * @return der eingelesene bestand. -1 bei abbruch
+   */
+  private int einlesenArtikelBestand() {
+    ausgabeInKonsole("\n" + HINT_ARTIKELBESTAND + "(Abbrechen mit -1):");
+    int bestand = -1;
+    while (bestand == -1) {
+      try {
+        bestand = einlesenInt();
+      } catch (InputMismatchException e) {
+        ausgabeInKonsole("Bitte ArtikelBestand eingeben. Bestand darf nicht negativ sein. -1 um Abzubrechen");
+      }
+    }
+    return bestand;
   }
 
   /**
@@ -307,25 +365,29 @@ public class ArtikelDialog {
   }
 
   /**
+   * uberprufung ob ein lager vorhanden ist
+   * 
+   * @return true wenn vorhanden, false falls nicht
+   */
+  private boolean checkLagerVorhanden() {
+    return lager != null;
+  }
+
+  /**
    * Gibt die aktuellen Informationen zum Artikel in der Konsole aus
    */
   private void LagerInfo() {
-    String info = "";
     if (lager == null) {
-      info += "Lager: ---";
+      ausgabeInKonsole("Lager: ---", true);
     } else {
-      info = lager.toString();
+      ausgabeInKonsole(lager.toString(), true);
     }
-    ausgabeInKonsole(info, true);
   }
-
-  // ========== HilfsMethoden ==========
 
   /**
    * gibt die beschreibung einer exception in der konsole aus
    */
   private void fehlerAusgabeInKonsole(Exception exception) {
-    // input.nextLine();
     ausgabeInKonsole(exception.getMessage());
   }
 
@@ -337,46 +399,47 @@ public class ArtikelDialog {
   }
 
   /**
-   * Konsolenausgabe: Zeilenweise, Formatiert mit muster
+   * Konsolenausgabe: Formatiert. fuer uberschriften
+   */
+  private String formatiereMenueTitelInKonsole(String uberschrift) {
+    return String.format("<-- %s -->", uberschrift);
+  }
+
+  /**
+   * Konsolenausgabe: Zeilenweise, optionale Formatierung mit muster
    * 
    * @param text               auszugebener text
    * @param ausgabeFormatieren optionales visuelles muster
    */
   private void ausgabeInKonsole(String text, boolean ausgabeFormatieren) {
+    text = text.replaceAll("\t", " ");
     if (ausgabeFormatieren) {
-      System.out.println("\n/*\n*\n* " + text + "\n*\n*/");
+      StringBuffer top = new StringBuffer();
+      StringBuffer mid = new StringBuffer();
+      StringBuffer bot = new StringBuffer();
+
+      top.append("+");
+      mid.append("+");
+      bot.append("+");
+
+      for (int i = 0; i <= text.toCharArray().length + 1; i++) {
+        top.append("-");
+        mid.append(" ");
+        bot.append("-");
+      }
+      top.append("+");
+      bot.append("+");
+      mid.append(" ");
+      mid.setCharAt(0, '|');
+      mid.setCharAt(mid.length() - 1, '|');
+
+      int txtStartIndex = mid.length() / 2 - text.length() / 2;
+      int endIndex = txtStartIndex + text.length();
+      mid.replace(txtStartIndex, endIndex, text);
+      String finalString = String.format("\n%s\n%s\n%s", top, mid, bot);
+      System.out.println(finalString);
     } else {
       System.out.println(text + "\n");
-    }
-  }
-
-  // /**
-  // * Gibt in der Konsole die Exception und Backtrace aus
-  // *
-  // * @param e die Auszugebene Exception
-  // */
-  // private void ausgabeBeiTextZumEinlesen(String text) {
-  // System.out.print(text + ": ");
-  // }
-
-  // /**
-  // * Gibt in der Konsole die Exception und Backtrace aus
-  // *
-  // * @param e die Auszugebene Exception
-  // */
-  // private void ausgabeFehlerinKonsole(Exception e) {
-  // System.out.println(e);
-  // }
-
-  /**
-   * Freigeben des Inputs
-   *
-   * 
-   * 
-   */
-  private void freigebenInput() {
-    if (input != null) {
-      input.nextLine();
     }
   }
 
@@ -392,6 +455,7 @@ public class ArtikelDialog {
       zahl = input.nextInt();
       input.nextLine();
     } catch (InputMismatchException e) {
+      input.nextLine();
       throw new InputMismatchException(
           FEHLERHAFTE_EINGABE_BITTE_EINE_GANZZAHL_INT_EINGEBEN);
     }
@@ -406,6 +470,7 @@ public class ArtikelDialog {
   private double einlesenDouble() {
     Double zahl;
     try {
+      input.useLocale(Locale.GERMAN);
       zahl = input.nextDouble();
       input.nextLine();
     } catch (InputMismatchException e) {
@@ -417,7 +482,7 @@ public class ArtikelDialog {
   }
 
   /**
-   * Einlesen einers Stringsaus der Konsole
+   * Einlesen einers Strings aus der Konsole
    *
    * @return der eingelesene Text
    * @throws InputMismatchException wenn die eingabe leer ist oder aus leerzechen

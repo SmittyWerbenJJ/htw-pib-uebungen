@@ -5,17 +5,22 @@ package src;
  * Klasse Lager zum verwalten von mehreren artikeln
  *
  * @author Raphael Kimbula & Siyamend Bozkurt
- * @version 2021.01.29
+ * @version 09.01.2022
  */
 public class Lager {
 
   private Artikel[] alleArtikel;
 
-  /* ===== Konstruktoren ===== */
+  /**
+   * Erstellt ein lager
+   */
   public Lager() {
     this.alleArtikel = new Artikel[10];
   }
 
+  /**
+   * Erstellt ein lager
+   */
   public Lager(int dimension) {
     if (dimension == 0) {
       throw new IllegalArgumentException(
@@ -24,16 +29,15 @@ public class Lager {
     this.alleArtikel = new Artikel[dimension];
   }
 
-  /* ===== Getter / Setter ===== */
   /**
-   * bestimmung der aktuelle Anzahl der Artikel im Lager.
+   * erhalte die anzahl der artikel im lager
    * 
-   * @return anzahl der artikel im lager
+   * @return summer der artikel in den lagerplätzen
    */
   public int getArtikelAnzahl() {
     int anzahl = 0;
-    for (int i = 0; i < alleArtikel.length; i++) {
-      if (alleArtikel[i] != null) {
+    for (Artikel artikel : alleArtikel) {
+      if (artikel != null) {
         anzahl++;
       }
     }
@@ -41,9 +45,9 @@ public class Lager {
   }
 
   /**
-   * ermittlung Anzahl der kapzitaet des lagers
+   * erhalte die lagergroesse
    * 
-   * @return
+   * @return die lagergroesse
    */
   public int getLagerGroesse() {
     return alleArtikel.length;
@@ -70,7 +74,15 @@ public class Lager {
     return alleArtikel[index];
   }
 
-  /* ===== Methoden ===== */
+  /**
+   * informationen des lagers ausgeben
+   */
+  public String toString() {
+    return ("Lagergroesse: '" +
+        this.getLagerGroesse() +
+        "\t'Artikelanzahl: '" +
+        this.getArtikelAnzahl());
+  }
 
   /**
    * einlegen eines neues objekts in das artikel-array des lagers
@@ -89,17 +101,17 @@ public class Lager {
       throw new IllegalArgumentException("Artikel nicht gueltig!");
     }
 
-    for (int i = 0; i < artieklanzahl; i++) {
+    boolean wurdeArtikelEingelegt = false;
+    for (int i = 0; i < alleArtikel.length && wurdeArtikelEingelegt == false; i++) {
       if (alleArtikel[i] == null) {
         alleArtikel[i] = artikel;
-        break;
+        wurdeArtikelEingelegt = true;
       }
     }
   }
 
   /**
    * entfernen eines artikels aus dem Lager
-   * lueckenloses entfernen aus dem artikel-array
    * 
    * @param artikelNr
    */
@@ -107,15 +119,15 @@ public class Lager {
     if (Artikel.istArtikelnummerValide(artikelNr) == false) {
       throw new IllegalArgumentException("Artikelnummer ungultig!");
     }
-
-    Artikel[] ergebnisArray = new Artikel[alleArtikel.length];
-    for (int i = 0; i < alleArtikel.length; i++) {
-      if (alleArtikel[i].getArtikelNr() == artikelNr) {
-        continue;
+    boolean wurdeArtikelEntfernt = false;
+    for (int i = 0; i < alleArtikel.length && wurdeArtikelEntfernt == false; i++) {
+      if (alleArtikel[i] != null) {
+        if (alleArtikel[i].getArtikelNr() == artikelNr) {
+          alleArtikel[i] = null;
+          wurdeArtikelEntfernt = true;
+        }
       }
-      ergebnisArray[i] = alleArtikel[i];
     }
-    alleArtikel = ergebnisArray;
   }
 
   /**
@@ -131,17 +143,17 @@ public class Lager {
     }
     if (zugang < 0) {
       throw new IllegalArgumentException(
-          "zugang von 0 und kleiner nicht erlaubt");
+          "artikelbuchung nur mit menge > 0 erlaubt");
     }
     boolean wurdeEinZugangGebucht = false;
-    for (Artikel artikel : alleArtikel) {
-      if (artikel == null) {
-        continue;
-      }
-      if (artikel.getArtikelNr() == artikelNr) {
-        artikel.bucheZugang(zugang);
-        wurdeEinZugangGebucht = true;
-        break;
+    Artikel artikel;
+    for (int i = 0; i < alleArtikel.length && wurdeEinZugangGebucht == false; i++) {
+      artikel = alleArtikel[i];
+      if (artikel != null) {
+        if (artikel.getArtikelNr() == artikelNr) {
+          artikel.bucheZugang(zugang);
+          wurdeEinZugangGebucht = true;
+        }
       }
     }
     if (wurdeEinZugangGebucht == false) {
@@ -170,10 +182,27 @@ public class Lager {
         break;
       }
     }
+
+    boolean wurdeEinAbgangGebucht = false;
+    Artikel artikel;
+    for (int i = 0; i < alleArtikel.length && wurdeEinAbgangGebucht == false; i++) {
+      artikel = alleArtikel[i];
+      if (artikel != null) {
+        if (artikel.getArtikelNr() == artikelNr) {
+          artikel.bucheAbgang(abgang);
+          wurdeEinAbgangGebucht = true;
+        }
+      }
+    }
+    if (wurdeEinAbgangGebucht == false) {
+      throw new IllegalArgumentException("ArtikelNr nicht im Lager");
+    }
   }
 
   /**
-   * preisanpassung eines artikels
+   * preisanpassung EINES artikels.
+   * 
+   * beispiel: alterpreis: 100€. anpassung: -10.0 neuerPreis:90€
    * 
    * @param artikelNr die artikelnummer des artikels
    * @param prozent   preisanpassung in prozent
@@ -182,59 +211,63 @@ public class Lager {
     if (istZahlNull(prozent)) {
       prozent = 0d;
     }
-    for (int i = 0; i < alleArtikel.length; i++) {
-      if (alleArtikel[i].getArtikelNr() == artikelNr) {
-        Double aktuellerPreis = alleArtikel[i].getPreis();
-        Double neuerPreis = aktuellerPreis + (aktuellerPreis * prozent);
-        alleArtikel[i].setPreis(neuerPreis);
-        break;
+    boolean wurdePreisAngepasst = false;
+    for (int i = 0; i < alleArtikel.length && wurdePreisAngepasst == false; i++) {
+      if (alleArtikel[i] != null) {
+        if (alleArtikel[i].getArtikelNr() == artikelNr) {
+          Double aktuellerPreis = alleArtikel[i].getPreis();
+          Double neuerPreis = aktuellerPreis + (aktuellerPreis * prozent / 100);
+          alleArtikel[i].setPreis(neuerPreis);
+          wurdePreisAngepasst = true;
+        }
       }
     }
   }
 
   /**
-   * preisanpassung aller artikel um einen prozentsatz.
-   * (positiv oder negativ)
+   * preisanpassung ALLER artikels.
    * 
-   * @param prozent anzuwendende anpassung in prozent
+   * beispiel: alterpreis: 100€. anpassung: -10.0 neuerPreis:90€
+   * 
+   * @param prozent preisanpassung in prozent
    */
   public void aenderePreisAllerArtikel(double prozent) {
     if (istZahlNull(prozent)) {
       prozent = 0d;
     }
-    Double aktuellerPreis = 0d;
-    Double neuerPreis = 0d;
-
-    for (Artikel artikel : alleArtikel) {
-      if (artikel == null) {
-        continue;
+    for (int i = 0; i < alleArtikel.length; i++) {
+      if (alleArtikel[i] != null) {
+        Double aktuellerPreis = alleArtikel[i].getPreis();
+        Double neuerPreis = aktuellerPreis + (aktuellerPreis * prozent / 100);
+        alleArtikel[i].setPreis(neuerPreis);
       }
-      aktuellerPreis = artikel.getPreis();
-      neuerPreis = aktuellerPreis * prozent;
-      artikel.setPreis(neuerPreis);
     }
   }
 
   /**
-   * informationen des lagers ausgeben
+   * prufung ob ein artikel bereits im lager vorhanden ist
+   * 
+   * @param artikelNr die zu prufende artikelnummer
+   * @return true falls vofhanden, false falls nicht
    */
-  public String toString() {
-    return ("Lagergroesse: '" +
-        this.getLagerGroesse() +
-        "' Artikelanzahl: '" +
-        this.getArtikelAnzahl());
+  public boolean istArtikelImLager(int artikelNr) {
+    for (int i = 0; i < alleArtikel.length; i++) {
+      if (alleArtikel[i] != null) {
+        if (alleArtikel[i].getArtikelNr() == artikelNr) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
-   * uberprufung ob eine zahl fast null ist - 3 nachkommastellen
+   * uberprufung ob eine zahl fast null ist - 7 nachkommastellen
    * 
    * @param zahl
    * @return true wenn zahl nahe 0
    */
   private boolean istZahlNull(Double zahl) {
-    if (zahl <= 0.000d && zahl >= -0.000d) {
-      return true;
-    }
-    return false;
+    return zahl <= 1e-7D && zahl >= -1e-7D;
   }
 }
