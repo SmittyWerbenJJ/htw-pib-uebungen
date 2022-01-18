@@ -1,21 +1,20 @@
-import java.io.LineNumberInputStream;
-import java.lang.annotation.Retention;
 import java.util.*;
 
 /**
- * Erstellt ein Artikel dialog in der CLI fur das Lager
+ * Lager und ArtikelDialog
  *
  * @author Raphael Kimbula & Siyamend Bozkurt
- * @version 0.2
+ * @version 17.01.2022
  */
 public class ArtikelDialog {
   private static final int OPTION_MENU_ZURUECK = 0;
   private static final int OPTION_HAUPTMENU_LAGERVERWALTUNG = 1;
   private static final int OPTION_LAGERMENU_SHOW_LAGERINFO = 1;
-  private static final int OPTION_LAGERMENU_ERSTELLE_LAGER = 2;
-  private static final int OPTION_LAGERMENU_ERSTELLEARTIKEL = 3;
-  private static final int OPTION_LAGERMENU_BUCHE_ABGANG = 4;
-  private static final int OPTION_LAGERMENU_BUCHE_ZUGANG = 5;
+  private static final int OPTION_LAGERMENU_SHOW_BESTANDSLISTE = 2;
+  private static final int OPTION_LAGERMENU_ERSTELLE_LAGER = 3;
+  private static final int OPTION_LAGERMENU_ERSTELLEARTIKEL = 4;
+  private static final int OPTION_LAGERMENU_BUCHE_ABGANG = 5;
+  private static final int OPTION_LAGERMENU_BUCHE_ZUGANG = 6;
   private static final String FALSCHE_EINGABE = "FALSCHE EINGABE";
   private static final String FEHLERHAFTE_EINGABE_BITTE_EINE_GANZZAHL_INT_EINGEBEN = "Fehlerhafte Eingabe, Bitte eine Ganzzahl (int) eingeben.";
   private static final String HINT_ARTIKELART = "ArtikelArt (text)";
@@ -79,6 +78,7 @@ public class ArtikelDialog {
       switch (funktion) {
         case OPTION_MENU_ZURUECK:
           loop = false;
+          break;
         case OPTION_HAUPTMENU_LAGERVERWALTUNG:
           menuLagerVerwaltung();
           break;
@@ -95,44 +95,64 @@ public class ArtikelDialog {
    */
   private void menuLagerVerwaltung() {
     boolean loop = true;
+
     while (loop) {
+      boolean LagerVorhanden = lager != null;
       StringBuffer menuText = new StringBuffer();
       menuText.append("\n==========| LagerVerwaltung |==========\n");
       menuText.append(OPTION_MENU_ZURUECK + "-->Menu schliessen\n");
       menuText.append(OPTION_LAGERMENU_SHOW_LAGERINFO + "-->LagerInfo Anzeigen\n");
+      menuText.append(OPTION_LAGERMENU_SHOW_BESTANDSLISTE + "-->Bestandsliste Anzeigen\n");
       menuText.append(OPTION_LAGERMENU_ERSTELLE_LAGER + "-->Ein neues Lager erstellen\n");
-      menuText.append(OPTION_LAGERMENU_ERSTELLEARTIKEL + "-->Artikel Erstellen\n");
-      menuText.append(OPTION_LAGERMENU_BUCHE_ABGANG + "-->Artikel Abbuchen\n");
-      menuText.append(OPTION_LAGERMENU_BUCHE_ZUGANG + "-->Artikel Einbuchen\n");
+      if (LagerVorhanden) {
+        menuText.append(OPTION_LAGERMENU_ERSTELLEARTIKEL + "-->Artikel Erstellen\n");
+        menuText.append(OPTION_LAGERMENU_BUCHE_ABGANG + "-->Artikel Abbuchen\n");
+        menuText.append(OPTION_LAGERMENU_BUCHE_ZUGANG + "-->Artikel Einbuchen\n");
+      }
       menuText.append("--> ");
       LagerInfo();
       ausgabeInKonsole(menuText.toString());
-      int funktion = einlesenInt();
 
+      int funktion = einlesenInt();
       switch (funktion) {
         case OPTION_MENU_ZURUECK:
           loop = false;
+          break;
         case OPTION_LAGERMENU_SHOW_LAGERINFO:
           LagerInfo();
           break;
         case OPTION_LAGERMENU_ERSTELLE_LAGER:
           erstelleLager();
           break;
-        case OPTION_LAGERMENU_ERSTELLEARTIKEL:
-          menuArtikelErstellung();
-          break;
-        case OPTION_LAGERMENU_BUCHE_ABGANG:
-          bucheAbgang();
-          break;
-        case OPTION_LAGERMENU_BUCHE_ZUGANG:
-          bucheZugang();
+        case OPTION_LAGERMENU_SHOW_BESTANDSLISTE:
+          ausgebenBestandsListe();
           break;
         default:
-          ausgabeInKonsole(FALSCHE_EINGABE);
+          if (LagerVorhanden) {
+            switch (funktion) {
+              case OPTION_LAGERMENU_ERSTELLEARTIKEL:
+                menuArtikelErstellung();
+                break;
+              case OPTION_LAGERMENU_BUCHE_ABGANG:
+                bucheAbgang();
+                break;
+              case OPTION_LAGERMENU_BUCHE_ZUGANG:
+                bucheZugang();
+                break;
+              default:
+                ausgabeInKonsole(FALSCHE_EINGABE);
+            }
+          } else {
+            ausgabeInKonsole(FALSCHE_EINGABE);
+          }
       }
     }
   }
 
+  /**
+   * 
+   * Enum fur die Benutzer auswahl des zu erstellenden artikels
+   */
   enum erstellBareArtikel {
     Video("Video"),
     CD("CD"),
@@ -143,6 +163,7 @@ public class ArtikelDialog {
     erstellBareArtikel(String name) {
       this.name = name;
     }
+
   }
 
   /**
@@ -150,11 +171,11 @@ public class ArtikelDialog {
    * 
    */
   private void menuArtikelErstellung() {
-    /** liste zur iteration der zu erstellenden artikel? */
     StringBuffer menuText = new StringBuffer();
     menuText.append("\n==========| ArtikelErstellung |==========\n");
     menuText.append(OPTION_MENU_ZURUECK + "-->Menu schliessen\n");
 
+    // Auflistung der Artikel aus dem Enum
     for (int i = 0; i < erstellBareArtikel.values().length; i++) {
       menuText.append(String.format("%d--> %s\n", i + 1, erstellBareArtikel.values()[i]));
     }
@@ -165,7 +186,6 @@ public class ArtikelDialog {
     int anzahlErstellbarerArtikel = erstellBareArtikel.values().length;
     if (!(option > 0 && option <= anzahlErstellbarerArtikel)) {
       return;
-
     }
     erstellBareArtikel zuErstellenderArtikel = null;
     for (int i = 0; i < anzahlErstellbarerArtikel && zuErstellenderArtikel == null; i++) {
@@ -196,6 +216,11 @@ public class ArtikelDialog {
     }
   }
 
+  /**
+   * Erstellt ein Buch Artikel
+   * 
+   * @return den erstellten Artikel oder null
+   */
   private Artikel erstelleBuch() {
     int artNr = einlesenArtikelnummer();
     if (artNr == -1)
@@ -217,16 +242,52 @@ public class ArtikelDialog {
       return null;
 
     Buch neueBuch = new Buch(artNr, bestand, preis, autor, titel, verlag);
-
     return neueBuch;
   }
 
+  /**
+   * Erstellt ein CD Artikel
+   * 
+   * @return den erstellten Artikel oder null
+   */
   private Artikel erstelleCD() {
-    return null;
+    int artNr = einlesenArtikelnummer();
+    if (artNr == -1)
+      return null;
+    int bestand = einlesenArtikelBestand();
+    if (bestand == -1)
+      return null;
+    double preis = einlesenArtikelPreis();
+    if (bestand == -1)
+      return null;
+    String interpret = einlesenText("Interpret");
+    String titel = einlesenText("Titel");
+    int anzahltitel = einlesenInt("Anzahltitel");
+    CD neueCD = new CD(artNr, bestand, preis, interpret, titel, anzahltitel);
+    return neueCD;
   }
 
+  /**
+   * Erstellt ein Video Artikel
+   * 
+   * @return den erstellten Artikel oder null
+   */
   private Artikel erstelleVideo() {
-    return null;
+    int artikelNr = einlesenArtikelnummer();
+    if (artikelNr == -1)
+      return null;
+    int bestand = einlesenArtikelBestand();
+    if (bestand == -1)
+      return null;
+    double preis = einlesenArtikelPreis();
+    if (bestand == -1)
+      return null;
+    String titel = einlesenText("Video - Titel");
+    int jahr = einlesenInt("Video - Erscheinungsjahr");
+    int spieldauer = einlesenInt("Video - Spieldauer");
+
+    Video neueVideo = new Video(artikelNr, bestand, preis, titel, spieldauer, jahr);
+    return neueVideo;
   }
 
   /**
@@ -234,86 +295,17 @@ public class ArtikelDialog {
    */
   private void erstelleLager() {
     lager = new Lager(10);
+    boolean eingabeOK = false;
+
+    while (eingabeOK == false) {
+      ausgabeInKonsole("Lagergroesse eingebene (0 eingeben->groesse 10): ");
+      int size = einlesenInt();
+      if (size <= 0) {
+        size = 10;
+      }
+      eingabeOK = true;
+    }
     ausgabeInKonsole("Es wurde ein Neues Lager mit 10 Plaetzen erstellt", true);
-  }
-
-  /**
-   * Erstellt ein Neuen Artikel Ohne Bestand (ID,Art)
-   * 
-   * @throws Exception
-   */
-  private void erstelleArtikelOhneBestand() {
-    if (checkLagerVorhanden() == false) {
-      ausgabeInKonsole(formatiereMenueTitelInKonsole(KEIN_LAGER_VORHANDEN));
-      return;
-    }
-    ausgabeInKonsole(formatiereMenueTitelInKonsole("Neuer Artikel: Ohne Bestand"));
-    int artikelNr = einlesenArtikelnummer();
-    if (artikelNr == -1) {
-      return;
-    }
-
-    Artikel schonVorhandenerArtikel = lager.getArtikelbyArtNummer(artikelNr);
-    if (schonVorhandenerArtikel != null) {
-      ausgabeInKonsole(ARTIKEL_BEREITS_IM_LAGER);
-      return;
-    }
-    String art = einlesenArtikelArt();
-    if (art == Character.toString(STRING_INPUT_ESCAPE_CHAR)) {
-      return;
-    }
-
-    Artikel artikel = new Artikel(artikelNr, art);
-    lager.legeAnArtikel(artikel);
-    ausgabeInKonsole(formatiereMenueTitelInKonsole("ES wurde ein neuer Artikel angelegt!"));
-    return;
-  }
-
-  /**
-   * Erstellt ein Artikel mit Bestand (ID,Art,Bestand)
-   */
-  private void erstelleArtikelMitBestand() {
-    ausgabeInKonsole(formatiereMenueTitelInKonsole("Neuer Artikel mit Bestand"));
-    int artikelNr = einlesenArtikelnummer();
-    if (artikelNr == -1) {
-      return;
-    }
-    int bestand = einlesenArtikelBestand();
-    if (bestand == -1) {
-      return;
-    }
-    String art = einlesenArtikelArt();
-    if (art == Character.toString(STRING_INPUT_ESCAPE_CHAR)) {
-      return;
-    }
-    Artikel artikel = new Artikel(artikelNr, art, bestand);
-    lager.legeAnArtikel(artikel);
-  }
-
-  /**
-   * Erstellt einen Artikel mit Gegebenen Preis (ID,Art,Bestand,Preis)
-   */
-  private void erstelleArtikelMitPreis() {
-    ausgabeInKonsole(formatiereMenueTitelInKonsole("Neuer Artikel mit Preis"));
-    int artikelNr = einlesenArtikelnummer();
-    if (artikelNr == -1) {
-      return;
-    }
-    String art = einlesenArtikelArt();
-    if (art == Character.toString(STRING_INPUT_ESCAPE_CHAR)) {
-      return;
-    }
-    int bestand = einlesenArtikelBestand();
-    if (bestand == -1) {
-      return;
-    }
-    double preis = einlesenArtikelPreis();
-    if (bestand == -1) {
-      return;
-    }
-
-    Artikel artikel = new Artikel(artikelNr, art, bestand, preis);
-    lager.legeAnArtikel(artikel);
   }
 
   /**
@@ -333,19 +325,7 @@ public class ArtikelDialog {
         vorgangAbbrechen = true;
       }
     }
-    /*
-     * while (istartikelNummerOK == false && vorgangAbbrechen == false) {
-     * try {
-     * ausgabeInKonsole("\n" + HINT_ARTIKELNR + " (Abbrechen mit -1):");
-     * artikelNr = einlesenInt();
-     * istartikelNummerOK = Artikel.istArtikelnummerValide(artikelNr);
-     * vorgangAbbrechen = (artikelNr == -1);
-     * } catch (InputMismatchException e) {
-     * ausgabeInKonsole("Bitte ganzzahligeArtikelNr eingeben. NUmmer darf nicht negativ sein. -1 um Abzubrechen"
-     * );
-     * }
-     * }
-     */
+
     return artikelNr;
   }
 
@@ -432,31 +412,34 @@ public class ArtikelDialog {
   private void bucheZugang() {
     int artikelNr = 0;
     int menge = 0;
+    boolean eingabeOk = false;
 
-    ausgabeInKonsole("Buchungsmenge-Zugang: ", true);
-    try {
+    while (eingabeOk == false) {
+      ausgabeInKonsole("Buchungsmenge-Zugang: ", true);
       ausgabeInKonsole("ArtikelNR: ");
       artikelNr = einlesenInt();
       ausgabeInKonsole("\nZugangsMenge: ");
       menge = einlesenInt();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+      if (menge < 0) {
+        ausgabeInKonsole("Bitte Zahl groesser 0 eingeben");
+      } else {
+        eingabeOk = true;
+      }
+    }
+
+    if (lager.getArtikelbyArtNummer(artikelNr) == null) {
+      ausgabeInKonsole("Artikel nicht im Lager!", true);
       return;
     }
-
     try {
       lager.bucheZugang(artikelNr, menge);
-    } catch (IllegalArgumentException e) {
-      fehlerAusgabeInKonsole(e);
-    }
 
-    ausgabeInKonsole(
-        "Es wurden '" +
-            menge +
-            "' von '" +
-            artikelNr +
-            "' in das Lager zugebucht.",
-        true);
+    } catch (Exception e) {
+      fehlerAusgabeInKonsole(e);
+      return;
+    }
+    ausgabeInKonsole(String.format("Es wurden %d von %d aus dem eingebucht", menge, artikelNr), true);
+    return;
   }
 
   /**
@@ -467,25 +450,35 @@ public class ArtikelDialog {
   private void bucheAbgang() {
     int artikelNr = 0;
     int menge = 0;
+    boolean eingabeOk = false;
 
-    ausgabeInKonsole("Buchungsmenge-Zugang: ", true);
-    try {
+    while (eingabeOk == false) {
+      ausgabeInKonsole("Buchungsmenge-Abgang: ", true);
       ausgabeInKonsole("ArtikelNR: ");
       artikelNr = einlesenInt();
       ausgabeInKonsole("\nAbgangsMenge: ");
       menge = einlesenInt();
-    } catch (InputMismatchException e) {
-      ausgabeInKonsole(e.getMessage(), false);
+      if (menge < 0) {
+        ausgabeInKonsole("Bitte Zahl groesser 0 eingeben");
+      } else {
+        eingabeOk = true;
+      }
+    }
+
+    if (lager.getArtikelbyArtNummer(artikelNr) == null) {
+      ausgabeInKonsole("Artikel nicht im Lager!", true);
       return;
     }
-    lager.bucheAbgang(artikelNr, menge);
-    ausgabeInKonsole(
-        "Es wurden '" +
-            menge +
-            "' von '" +
-            artikelNr +
-            "' aus dem Lager abgebucht.",
-        true);
+    try {
+      lager.bucheAbgang(artikelNr, menge);
+
+    } catch (Exception e) {
+      fehlerAusgabeInKonsole(e);
+      return;
+    }
+    ausgabeInKonsole(String.format("Es wurden %d von %d aus dem ausgebucht", menge, artikelNr), true);
+    return;
+
   }
 
   /**
@@ -512,7 +505,7 @@ public class ArtikelDialog {
    * gibt die beschreibung einer exception in der konsole aus
    */
   private void fehlerAusgabeInKonsole(Exception exception) {
-    ausgabeInKonsole(exception.getMessage());
+    ausgabeInKonsole(exception.getMessage(), true);
   }
 
   /**
@@ -526,7 +519,7 @@ public class ArtikelDialog {
    * Konsolenausgabe: Formatiert. fuer uberschriften
    */
   private String formatiereMenueTitelInKonsole(String uberschrift) {
-    return String.format("<--> %s -->", uberschrift);
+    return String.format("<-- %s -->", uberschrift);
   }
 
   /**
@@ -585,11 +578,31 @@ public class ArtikelDialog {
         input.nextLine();
         throw new InputMismatchException(FEHLERHAFTE_EINGABE_BITTE_INT);
       }
+    }
+    return zahl;
 
-      // if (zahl == null) {
-      // zahl = einlesenInt();
-      // }
-      // FEHLERHAFTE_EINGABE_BITTE_EINE_GANZZAHL_INT_EINGEBEN);
+  }
+
+  /**
+   * Einlesen einer Integer Zahl aus der Konsole mit kurzer anweisung
+   * Bei Fehlerhafte eingabe wird erneute Eingabe angefordert.
+   *
+   * @return die eingelesene Zahl
+   * @throws InputMismatchException bei fehlerhafter eingabe
+   */
+  private int einlesenInt(String hint) {
+    if (!hint.isBlank()) {
+      System.out.println(hint + ": ");
+    }
+    Integer zahl = null;
+    while (zahl == null) {
+      try {
+        zahl = input.nextInt();
+        input.nextLine();
+      } catch (Exception e) {
+        input.nextLine();
+        throw new InputMismatchException(FEHLERHAFTE_EINGABE_BITTE_INT);
+      }
     }
     return zahl;
 
@@ -653,5 +666,29 @@ public class ArtikelDialog {
   private void BeendeProgramm() {
     this.exit = true;
     ausgabeInKonsole("Programm Wird Beendet ...", false);
+  }
+
+  /** Ausgeben der aktuellen bestandsliste */
+  public void ausgebenBestandsListe() {
+    double GesamtPreisAlles = 0;
+    System.out.println("ArtNr\t\tBeschreibung\t\tPreis\t\tBestand\t\tGesamt");
+    // for (int i = 0; i != Lager.alleArtikel[i]; i++) {
+    for (Artikel artikel : lager.getAlleArtikel()) {
+      double GesamtPreis = artikel.getPreis() * artikel.getBestand();
+      int artikelNR = artikel.getArtikelNr();
+      String beschreibung = artikel.getBeschreibung();
+      double preis = artikel.getPreis();
+      int bestand = artikel.getBestand();
+      System.out.println(
+          artikelNR + "\t\t" +
+              beschreibung + "\t\t" +
+              preis + "\t\t" +
+              bestand + "\t\t" +
+              GesamtPreis);
+
+      GesamtPreisAlles = GesamtPreisAlles + GesamtPreis;
+    }
+    System.out.println("----------------------------------------------------------------------------------------");
+    System.out.println("Gesamtpreis:                                                         " + GesamtPreisAlles);
   }
 }

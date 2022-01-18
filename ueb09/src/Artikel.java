@@ -80,7 +80,7 @@ public class Artikel {
    * toString Methode (ArtikelNR,Art,BEstand)
    */
   public String toString() {
-    return String.format("ArtikelNr: %i - Art: %s - Bestand: %s - ", this.artikelNr, this.art, this.bestand);
+    return String.format("ArtikelNr: %d - Art: %s - Bestand: %s - ", this.artikelNr, this.art, this.bestand);
   }
 
   /**

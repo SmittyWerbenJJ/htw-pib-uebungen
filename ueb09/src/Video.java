@@ -1,8 +1,12 @@
 import java.util.Objects;
 
-import javax.net.ssl.HandshakeCompletedEvent;
-import javax.print.attribute.HashDocAttributeSet;
-
+/**
+ * ueb09
+ * Arikel Klasse - Video
+ *
+ * @author Raphael Kimbula & Siyamend Bozkurt
+ * @version 2021.01.29
+ */
 public class Video extends Artikel {
 
     private int spieldauer;

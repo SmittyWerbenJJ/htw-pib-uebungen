@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * ueb05
+ * ueb09
  * Klasse Lager zum verwalten von mehreren artikeln
  *
  * @author Raphael Kimbula & Siyamend Bozkurt
@@ -76,8 +79,10 @@ public class Lager {
    */
   public Artikel getArtikelbyArtNummer(int ArtikelNummer) {
     for (Artikel artikel : alleArtikel) {
-      if (artikel.getArtikelNr() == ArtikelNummer) {
-        return artikel;
+      if (artikel != null) {
+        if (artikel.getArtikelNr() == ArtikelNummer) {
+          return artikel;
+        }
       }
     }
     return null;
@@ -102,10 +107,14 @@ public class Lager {
       throw new IllegalArgumentException("Artikel nicht gueltig!");
     }
 
-    for (int i = 0; i < artieklanzahl; i++) {
-      if (alleArtikel[i] == null) {
-        alleArtikel[i] = artikel;
-        break;
+    if (artieklanzahl == 0) {
+      alleArtikel[0] = artikel;
+    } else {
+      for (int i = 0; i <= artieklanzahl; i++) {
+        if (alleArtikel[i] == null) {
+          alleArtikel[i] = artikel;
+          break;
+        }
       }
     }
   }
@@ -178,11 +187,17 @@ public class Lager {
     }
 
     for (Artikel artikel : alleArtikel) {
-      if (artikel.getArtikelNr() == artikelNr) {
-        artikel.bucheAbgang(abgang);
-        break;
+      if (artikel != null) {
+
+        if (artikel.getArtikelNr() == artikelNr) {
+          if (abgang > artikel.getBestand()) {
+            throw new IllegalArgumentException("abgang von mehr als vorhanden nicht erlaubt");
+          }
+          artikel.bucheAbgang(abgang);
+        }
       }
     }
+
   }
 
   /**
@@ -249,5 +264,20 @@ public class Lager {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Erhalte eine Lueckenlose Liste aller artikel aus dem lager
+   * 
+   * @return die liste der artikel
+   */
+  public List<Artikel> getAlleArtikel() {
+    List<Artikel> artikelListeRueckgabe = new ArrayList<Artikel>();
+    for (Artikel artikel : alleArtikel) {
+      if (artikel != null) {
+        artikelListeRueckgabe.add(artikel);
+      }
+    }
+    return artikelListeRueckgabe;
   }
 }

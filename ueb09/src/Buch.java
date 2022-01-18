@@ -1,5 +1,12 @@
 import java.util.*;
 
+/**
+ * ueb09
+ * Arikel Klasse - Buch
+ *
+ * @author Raphael Kimbula & Siyamend Bozkurt
+ * @version 2021.01.29
+ */
 public class Buch extends Artikel {
     private String verlag;
     private String autor;
@@ -69,6 +76,16 @@ public class Buch extends Artikel {
         return String.format("%s:%s", autor, titel);
     }
 
+    /**
+     * Konstruktor zum erstellen einer CD
+     * 
+     * @param artikelNr die ArtikelNummer
+     * @param bestand   der Bestand
+     * @param preis     der preis
+     * @param autor     Der autor
+     * @param titel     der Titel
+     * @param verlag    der verlag dieses Buches
+     */
     public Buch(int artikelNr, int bestand, double preis, String autor, String titel, String verlag) {
         super(artikelNr, ARTIKEL_ART, bestand, preis);
         this.setTitel(titel);

@@ -1,12 +1,12 @@
 import java.util.Objects;
 
 /**
- * CD Class
- * 
- * @Author Raphael Kimbula
- * 
- * @version v2022.01.16
+ * CD class
+ * ueb09
+ * Arikel Klasse - CD
  *
+ * @author Raphael Kimbula & Siyamend Bozkurt
+ * @version 2021.01.29
  */
 public class CD extends Artikel {
     private String interpret;
@@ -77,10 +77,21 @@ public class CD extends Artikel {
         return Objects.hash(getArtikelNr(), titel, 29);
     }
 
+    /**
+     * Konstruktor zum erstellen einer CD
+     * 
+     * @param artikelNr   die ArtikelNummer
+     * @param bestand     der Bestand
+     * @param preis       der preis
+     * @param interpret   Der Interpret
+     * @param titel       der Titel
+     * @param anzahlTitel die anzahl an titel in dieser CD
+     */
     public CD(int artikelNr, int bestand, double preis, String interpret, String titel, int anzahlTitel) {
         super(artikelNr, ARTIKEL_ART, bestand, preis);
         this.setTitel(titel);
         this.setAnzahlTitel(anzahlTitel);
+        this.interpret = interpret;
     }
 
     @Override
