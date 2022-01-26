@@ -2,7 +2,7 @@
  * Person Klasse
  * 
  * @author Raphael Kimbula & Siyamend Bozkurt
- * @version 24.01.2022
+ * @version 26.01.2022
  */
 public class Person {
 

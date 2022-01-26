@@ -4,11 +4,11 @@ import java.util.*;
  * Dialog der uebung 10
  * 
  * @author Raphale Kimbula & Siyamend Bozkurt
- * @version 24.01.2022
+ * @version 26.01.2022
  */
 public class Dialog {
     Scanner input;
-    Queue Q;
+    Queue q;
 
     public static void main(String[] args) {
         Dialog derDialog = new Dialog();
@@ -19,7 +19,7 @@ public class Dialog {
      * konstruktor des dialogs
      */
     public Dialog() {
-        Q = null;
+        q = null;
         input = new Scanner(System.in);
     }
 
@@ -43,7 +43,7 @@ public class Dialog {
         println("\nHauptMenu");
         println("0 --> Programm ende");
         println("1 --> Queue Erstellen");
-        if (Q != null) {
+        if (q != null) {
             println("2 --> Q Element Am ende einfügen       ");
             println("3 --> Q Element am anfang löschen");
             println("4 --> Q Element ausgeben mit index");
@@ -54,7 +54,7 @@ public class Dialog {
         }
         int auswahl = einlesenInt("--> ");
 
-        if (Q == null) {
+        if (q == null) {
             switch (auswahl) {
                 case 0:
                     return;
@@ -90,7 +90,7 @@ public class Dialog {
                     anzeigenEingefuegteElemente();
                     break;
                 case 8:
-                    print(Q);
+                    print(q);
                     break;
                 default:
                     println("Falsche Eingabe!");
@@ -103,7 +103,7 @@ public class Dialog {
      * anzeigen ob die warteschlange leer ist
      */
     private void anzeigenEingefuegteElemente() {
-        if (Q.empty()) {
+        if (q.empty()) {
             println("Warteschlange leer");
         } else {
             println("Warteschlange NICHT leer");
@@ -125,12 +125,12 @@ public class Dialog {
                 switch (eingabe) {
                     case "string":
                         QGroesse = einlesenInt("Queue groesse eingeben: ");
-                        Q = new StringQueue(QGroesse);
+                        q = new StringQueue(QGroesse);
                         wurdeQErstellt = true;
                         break;
                     case "person":
                         QGroesse = einlesenInt("Queue groesse eingeben: ");
-                        Q = new PersonQueue(QGroesse);
+                        q = new PersonQueue(QGroesse);
                         wurdeQErstellt = true;
                         break;
                     default:
@@ -151,10 +151,10 @@ public class Dialog {
 
         try {
 
-            if (Q instanceof PersonQueue) {
-                Q.addLast(EinlesenPersonObjekt());
-            } else if (Q instanceof StringQueue) {
-                Q.addLast(EinlesenStringObjekt());
+            if (q instanceof PersonQueue) {
+                q.addLast(EinlesenPersonObjekt());
+            } else if (q instanceof StringQueue) {
+                q.addLast(EinlesenStringObjekt());
             }
         } catch (Exception e) {
             println(e.getMessage());
@@ -204,7 +204,7 @@ public class Dialog {
      * menu zur entfernen eines elements in der queue
      */
     void showMenuelementEntfernen() {
-        Object dasErsteElement = Q.removeFirst();
+        Object dasErsteElement = q.removeFirst();
         if (dasErsteElement == null) {
             println("Queue ist bereits Leer. Es wurde nichts entfernt");
             return;
@@ -221,7 +221,7 @@ public class Dialog {
         int index = einlesenInt("QueueIndex zur ausgabe auswählen(int): ");
         index--;
         try {
-            Object qObject = Q.get(index);
+            Object qObject = q.get(index);
             println(qObject.toString());
         } catch (Exception e) {
             println(e.getMessage());
@@ -233,14 +233,14 @@ public class Dialog {
      * ausgeben der queue groesse in der konsole
      */
     void anzeigenQGroesse() {
-        println(String.format("Die Warteschlange hat eine groesse von: %d ", Q.size()));
+        println(String.format("Die Warteschlange hat eine groesse von: %d ", q.size()));
     }
 
     /**
      * ausgeben ob es noch freuie plaetze in der queue gibt
      */
     void anzeigenQFreiePlaetze() {
-        if (Q.full()) {
+        if (q.full()) {
             println("In der Queue gibt es noch Freie Plaetze");
         } else {
             println("In der Queue gibt KEINE Freie Plaetze");

@@ -4,7 +4,7 @@ import java.util.*;
  * PersonQueue der uebung 10
  * 
  * @author Raphale Kimbula & Siyamend Bozkurt
- * @version 24.01.2022
+ * @version 26.01.2022
  * 
  */
 public class PersonQueue implements Queue {
@@ -59,11 +59,11 @@ public class PersonQueue implements Queue {
      * anschliessend einruecken aller elemente
      */
     @Override
-    public Object removeFirst() {
+    public Person removeFirst() {
         if (vorne == hinten) {
             throw new NoSuchElementException(FEHLER_PERSON_Q_IST_LEER);
         }
-        Object erstePerson = persons[vorne];
+        Person erstePerson = persons[vorne];
         persons[vorne] = null;
         updateQueue();
         return erstePerson;
@@ -75,7 +75,7 @@ public class PersonQueue implements Queue {
      * @param i der index des zu erhaltenden erlements
      */
     @Override
-    public Object get(int i) {
+    public Person get(int i) {
         if (i < vorne) {
             throw new IndexOutOfBoundsException(FEHLER_INDEX_IST_NICHT_IN_Q);
         }

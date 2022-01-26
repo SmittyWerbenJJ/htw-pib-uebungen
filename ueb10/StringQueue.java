@@ -4,7 +4,7 @@ import java.util.*;
  * StringQueue der uebung 10
  * 
  * @author Raphale Kimbula & Siyamend Bozkurt
- * @version 24.01.2022
+ * @version 26.01.2022
  */
 
 public class StringQueue implements Queue {
@@ -64,11 +64,11 @@ public class StringQueue implements Queue {
      * anschliessend einruecken aller elemente
      */
     @Override
-    public Object removeFirst() {
+    public String removeFirst() {
         if (vorne == hinten) {
             throw new NoSuchElementException(FEHLER_STRING_Q_IST_LEER);
         }
-        Object ersterString = strings[vorne];
+        String ersterString = strings[vorne];
         strings[vorne] = null;
         updateQueue();
         return ersterString;
@@ -80,7 +80,7 @@ public class StringQueue implements Queue {
      * @param i der index des zu erhaltenden erlements
      */
     @Override
-    public Object get(int i) {
+    public String get(int i) {
         if (i < vorne) {
             throw new IndexOutOfBoundsException(FEHLER_INDEX_IST_NICHT_IN_Q);
         }
