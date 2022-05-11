@@ -1,0 +1,23 @@
+dialog:
+
+
+operation auswahl: arrayfüllen, rechenoperation, array anzeigen, beenden
+
+array methode auswahl:
+  automatik/ manuell:
+    automatik:
+     anzahl elemente (int):
+        random numbers[length:anzahl zahlen]
+    manuell:
+     anzahl elemente (int):
+      (i/imax): <input>
+      zahlen(float), trennung durch leerzeichen, bestätigung mit enter
+
+rechenoperation ausführen:
+  auswahl operation:
+    <alle operationen.getname>
+array anzeigen:
+  print array 
+
+beenden:
+  syste.exit
